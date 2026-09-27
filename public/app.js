@@ -2108,7 +2108,96 @@ function evidenceStatisticsText(evidence) {
  * @param {object} [data] the full result, to tell "nothing qualified" apart
  *   from "evidence was never applicable to this file"
  */
+const evidenceReviews = new WeakMap();
+let reviewedResult = null;
+const reviewControls = Object.fromEntries([
+  "evidenceReview", "evidenceSearch", "evidenceStrength", "evidenceSelectedOnly",
+  "evidenceClearFilters", "evidenceCount", "evidenceNoMatches", "briefPanel",
+  "briefCount", "briefNote", "exportBriefBtn",
+].map(id => [id, document.getElementById(id)]));
+
+function reviewState(data) {
+  if (!evidenceReviews.has(data)) {
+    evidenceReviews.set(data, { selected: new Set(), query: "", strength: "", selectedOnly: false, note: "" });
+  }
+  return evidenceReviews.get(data);
+}
+
+function updateEvidenceReview() {
+  if (!reviewedResult) return;
+  const state = reviewState(reviewedResult);
+  const evidence = reviewedResult.evidence || [];
+  let visible = 0;
+  evidenceList.querySelectorAll("[data-evidence-index]").forEach(card => {
+    const index = Number(card.dataset.evidenceIndex);
+    const finding = evidence[index];
+    const selected = state.selected.has(index);
+    const text = [finding.claim, finding.method, ...(finding.columns || [])].join(" ").toLocaleLowerCase();
+    card.hidden = !(text.includes(state.query.trim().toLocaleLowerCase())
+      && (!state.strength || finding.strength === state.strength)
+      && (!state.selectedOnly || selected));
+    if (!card.hidden) visible += 1;
+    card.classList.toggle("is-selected", selected);
+    const button = card.querySelector("[data-select-evidence]");
+    button.setAttribute("aria-pressed", String(selected));
+    button.textContent = selected ? "Selected for brief ✓" : "Add to brief +";
+  });
+  reviewControls.evidenceCount.textContent = `${visible} of ${evidence.length} findings · ${state.selected.size} selected`;
+  reviewControls.evidenceSelectedOnly.setAttribute("aria-pressed", String(state.selectedOnly));
+  reviewControls.evidenceNoMatches.hidden = !evidence.length || visible > 0;
+  reviewControls.briefPanel.hidden = !state.selected.size;
+  reviewControls.briefCount.textContent = `${state.selected.size} finding${state.selected.size === 1 ? "" : "s"} in your brief`;
+}
+
+reviewControls.evidenceSearch.addEventListener("input", event => {
+  if (!reviewedResult) return;
+  reviewState(reviewedResult).query = event.target.value;
+  updateEvidenceReview();
+});
+reviewControls.evidenceStrength.addEventListener("change", event => {
+  if (!reviewedResult) return;
+  reviewState(reviewedResult).strength = event.target.value;
+  updateEvidenceReview();
+});
+reviewControls.evidenceSelectedOnly.addEventListener("click", () => {
+  if (!reviewedResult) return;
+  const state = reviewState(reviewedResult);
+  state.selectedOnly = !state.selectedOnly;
+  updateEvidenceReview();
+});
+reviewControls.evidenceClearFilters.addEventListener("click", () => {
+  if (!reviewedResult) return;
+  Object.assign(reviewState(reviewedResult), { query: "", strength: "", selectedOnly: false });
+  reviewControls.evidenceSearch.value = "";
+  reviewControls.evidenceStrength.value = "";
+  updateEvidenceReview();
+});
+evidenceList.addEventListener("click", event => {
+  const button = event.target.closest("[data-select-evidence]");
+  if (!button || !reviewedResult) return;
+  const state = reviewState(reviewedResult);
+  const index = Number(button.dataset.selectEvidence);
+  if (state.selected.has(index)) state.selected.delete(index);
+  else state.selected.add(index);
+  updateEvidenceReview();
+  if (button.closest("[data-evidence-index]").hidden) reviewControls.evidenceSelectedOnly.focus();
+});
+reviewControls.briefNote.addEventListener("input", event => {
+  if (reviewedResult) reviewState(reviewedResult).note = event.target.value;
+});
+
 function renderEvidence(evidence, data) {
+  reviewedResult = data || null;
+  reviewControls.evidenceReview.hidden = !evidence.length;
+  reviewControls.evidenceNoMatches.hidden = true;
+  if (data) {
+    const state = reviewState(data);
+    reviewControls.evidenceSearch.value = state.query;
+    reviewControls.evidenceStrength.innerHTML = '<option value="">All strengths</option>'
+      + [...new Set(evidence.map(e => e.strength))].map(strength => `<option value="${esc(strength)}">${esc(strength)}</option>`).join("");
+    reviewControls.evidenceStrength.value = state.strength;
+    reviewControls.briefNote.value = state.note;
+  }
   // A file with no evidence used to make this panel disappear — the headline of
   // tier ①, gone, with nothing said. A reader could not tell "Ridge found
   // nothing worth claiming" from "Ridge broke" or "I uploaded it wrong". A
@@ -2131,7 +2220,7 @@ function renderEvidence(evidence, data) {
     return;
   }
   evidenceSection.style.display = "";
-  evidenceList.innerHTML = evidence.map(e => {
+  evidenceList.innerHTML = evidence.map((e, index) => {
     const provenance = e.provenance;
     const headers = e.columns || [];
     const sourceRows = provenance?.sourceRows || [];
@@ -2150,7 +2239,7 @@ function renderEvidence(evidence, data) {
           ${sourceRows.map((source) => `<tr><td>${esc(source.rowNumber)}</td>${headers.map((column) => `<td>${esc(source.values?.[column] ?? "—")}</td>`).join("")}</tr>`).join("")}
         </tbody></table></div>` : ""}
     </details>` : "";
-    return `<div class="evidence-item">
+    return `<div class="evidence-item" data-evidence-index="${index}">
       <div class="evidence-head">
         ${strengthScale(e.strength)}
         <span class="evidence-claim">${esc(e.claim)}</span>
@@ -2159,8 +2248,10 @@ function renderEvidence(evidence, data) {
       ${statistics ? `<div class="evidence-inference">${esc(statistics)}</div>` : ""}
       ${e.caveat ? `<div class="evidence-caveat">Caveat — ${esc(e.caveat)}</div>` : ""}
       ${drilldown}
+      <div class="evidence-actions"><button type="button" data-select-evidence="${index}" aria-pressed="false" aria-label="${esc(`Select finding for brief: ${e.claim}`)}">Add to brief +</button></div>
     </div>`;
   }).join("");
+  updateEvidenceReview();
 }
 
 // ─── Target column selector ───────────────────────────────────
@@ -2429,6 +2520,47 @@ function rerunAnalysis() {
 rerunBtn?.addEventListener("click", rerunAnalysis);
 
 // ─── Exports ──────────────────────────────────────────────────
+function buildBriefHtml(data, state) {
+  const findings = (data.evidence || []).filter((_, index) => state.selected.has(index));
+  const source = data.meta || {};
+  const cards = findings.map(finding => `<article>
+    <p class="eyebrow">${esc(finding.strength)} support · engine ${esc(finding.engineVersion)}</p>
+    <h2>${esc(finding.claim)}</h2>
+    <p>${esc(finding.method)} · n=${esc(finding.sampleSize)} · ${esc(finding.coverage)}% coverage</p>
+    ${evidenceStatisticsText(finding) ? `<p>${esc(evidenceStatisticsText(finding))}</p>` : ""}
+    ${finding.caveat ? `<p><strong>Caveat:</strong> ${esc(finding.caveat)}</p>` : ""}
+    ${finding.provenance ? `<details><summary>Calculation record</summary><pre>${esc(JSON.stringify(finding.provenance, null, 2))}</pre></details>` : ""}
+  </article>`).join("");
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+    <title>${esc(source.filename || "Analysis")} | Ridge evidence brief</title>
+    <style>:root{--paper:#f4f6f1;--card:#fff;--ink:#14201a;--muted:#47574e;--line:#dce3da;--accent:#176b51}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.65 system-ui,sans-serif}
+    main{max-width:850px;margin:auto;padding:48px 24px}h1{font-size:36px;line-height:1.2;letter-spacing:-.03em}h2{font-size:20px;line-height:1.4}
+    p,h1,h2{overflow-wrap:anywhere}.eyebrow{color:var(--accent);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+    header{border-bottom:1px solid var(--line);padding-bottom:24px}article,aside{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px;margin-top:20px}
+    .note,pre{white-space:pre-wrap;overflow-wrap:anywhere}pre{font-size:12px}summary{cursor:pointer;color:var(--accent)}footer{margin-top:28px;color:var(--muted);font-size:13px}
+    @media print{body{background:var(--card)}main{padding:0}article{break-inside:avoid}details>pre{display:block}}
+    </style></head><body><main><header><p class="eyebrow">Ridge / Evidence brief</p><h1>${esc(source.filename || "Analysis")}</h1>
+    <p>${findings.length} selected of ${(data.evidence || []).length} reported findings. This is a curated selection, not a complete analysis.</p>
+    <p>${esc(source.totalRows ?? "Unknown")} analyzed rows${source.sheet ? ` · Sheet: ${esc(source.sheet)}` : ""} · Exported ${esc(new Date().toISOString())}</p>
+    <details><summary>Analysis context and source reading</summary><pre>${esc(JSON.stringify(source, null, 2))}</pre></details></header>
+    ${state.note.trim() ? `<aside><p class="eyebrow">Analyst note / Not computed by Ridge</p><p class="note">${esc(state.note)}</p></aside>` : ""}
+    ${cards}<footer>Statistics are computed from the source data. Selection and commentary belong to the analyst. Exploratory findings do not establish causation. This file includes source context and may include source-row excerpts; review it before sharing.</footer></main></body></html>`;
+}
+
+reviewControls.exportBriefBtn.addEventListener("click", () => {
+  if (!reviewedResult) return;
+  const state = reviewState(reviewedResult);
+  if (!state.selected.size) return;
+  const blob = new Blob([buildBriefHtml(reviewedResult, state)], { type: "text/html;charset=utf-8" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `${exportBaseName()}-brief.html`;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+});
+
 function activeResult() {
   return currentComparison || allFileResults[activeTabIdx] || allFileResults[0] || null;
 }

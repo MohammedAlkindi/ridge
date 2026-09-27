@@ -1,5 +1,17 @@
 import { expect, test } from "@playwright/test";
 
+test("evidence review and brief controls fit a phone and have touch targets", async ({ page }) => {
+  await page.goto("/app?sample=1");
+  await expect(page.locator("#evidenceReview")).toBeVisible({ timeout: 20_000 });
+  await page.locator("[data-select-evidence]").first().tap();
+  await page.locator("#briefNote").fill("Review with the operations team.");
+  for (const selector of ["#evidenceSearch", "#evidenceStrength", "#evidenceSelectedOnly", "#exportBriefBtn", "[data-select-evidence]"]) {
+    const box = await page.locator(selector).first().boundingBox();
+    expect(box.height).toBeGreaterThanOrEqual(44);
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+});
+
 // Runs only under the "mobile" project (Pixel 5 viewport, touch enabled).
 
 test("the application is usable on a phone viewport", async ({ page }) => {

@@ -206,6 +206,38 @@ html { scroll-behavior: smooth; }
 .animate-delay-4 { animation-delay: 0.20s; opacity: 0; }
 
 /* ─── Layout ─────────────────────────────────────────────────── */
+.evidence-review { padding: 22px; margin-bottom: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.review-heading h3 { font-size: 19px; letter-spacing: -.025em; }
+.review-heading p, .brief-heading p { color: var(--text-2); font-size: 13px; margin-top: 4px; }
+.review-filters { display: flex; align-items: end; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.review-filters label, .brief-panel > label { display: grid; gap: 6px; font-size: 12px; font-weight: 600; color: var(--text-2); }
+.review-search { flex: 1 1 220px; min-width: 0; }
+.review-filters input, .review-filters select, .brief-panel textarea { width: 100%; min-height: 44px; border: 1px solid var(--border-2); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); padding: 10px 12px; font: inherit; font-size: 16px; }
+.review-filters button, .evidence-actions button, .brief-heading button { min-height: 44px; padding: 10px 14px; border: 1px solid var(--border-2); border-radius: var(--radius-sm); background: var(--surface); color: var(--text-2); font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; }
+.review-filters button:hover, .evidence-actions button:hover { background: var(--surface-2); border-color: var(--accent); }
+.review-filters button[aria-pressed="true"], .evidence-actions button[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); background: var(--accent-bg); }
+.evidence-review :is(input, select, textarea, button):focus-visible, .evidence-actions button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.review-status { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-top: 14px; color: var(--text-3); font-size: 12px; font-variant-numeric: tabular-nums; }
+.brief-panel { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
+.brief-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+.brief-heading strong { font-size: 15px; }
+.brief-heading button { flex-shrink: 0; color: var(--on-fill); background: var(--accent); border-color: var(--accent); }
+.brief-heading button:hover { background: var(--accent-hover); }
+.brief-panel > label { display: block; margin-bottom: 6px; }
+.brief-panel label span { font-weight: 400; }
+.brief-panel textarea { resize: vertical; font-size: 14px; line-height: 1.5; }
+.brief-session-note { margin-top: 8px; font-size: 12px; color: var(--text-3); }
+.evidence-actions { display: flex; justify-content: flex-end; margin-top: 12px; }
+.evidence-item.is-selected { border-color: var(--accent); }
+.evidence-item[hidden], .evidence-review[hidden], .brief-panel[hidden], #evidenceNoMatches[hidden] { display: none; }
+@media (max-width: 600px) {
+  .evidence-review { padding: 16px; }
+  .review-search { flex-basis: 100%; }
+  .review-filters > label:not(.review-search) { flex: 1 1 100%; }
+  .review-filters > button { flex: 1; }
+  .brief-heading { align-items: stretch; flex-direction: column; gap: 10px; }
+}
+
 .app { min-height: 100vh; display: flex; flex-direction: column; }
 
 .topbar {
