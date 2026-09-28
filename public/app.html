@@ -358,6 +358,23 @@
 
               <div id="evidenceSection" style="display:none;">
                 <div class="card-title">Evidence <span class="prov prov--derived">Derived</span></div>
+                <div id="evidenceReview" class="evidence-review" hidden>
+                  <div class="review-heading"><h3>Find the signal. Build your brief.</h3><p>Choose findings to take into your next decision.</p></div>
+                  <div class="review-filters">
+                    <label class="review-search">Search evidence<input id="evidenceSearch" type="search" name="evidence-search" autocomplete="off" placeholder="Search claims, columns, or methods…" /></label>
+                    <label>Strength<select id="evidenceStrength"><option value="">All strengths</option></select></label>
+                    <button id="evidenceSelectedOnly" type="button" aria-pressed="false">Selected only</button>
+                    <button id="evidenceClearFilters" type="button">Reset filters</button>
+                  </div>
+                  <div class="review-status"><span id="evidenceCount" role="status" aria-live="polite"></span><span>Selection does not change the analysis.</span></div>
+                  <div id="briefPanel" class="brief-panel" hidden>
+                    <div class="brief-heading"><div><strong id="briefCount"></strong><p>Methods, coverage, and caveats travel with every finding.</p></div><button id="exportBriefBtn" type="button">Download brief</button></div>
+                    <label for="briefNote">Analyst note <span>optional · your interpretation</span></label>
+                    <textarea id="briefNote" name="analyst-note" rows="2" maxlength="4000" autocomplete="off" placeholder="What should your team do next?…"></textarea>
+                    <p class="brief-session-note">Kept only in this page. Download before refreshing or starting a new analysis. Briefs are not included in saved share links.</p>
+                  </div>
+                </div>
+                <div id="evidenceNoMatches" class="evidence-empty" hidden><strong>No findings match these filters.</strong><p>Try another search or reset the filters. Your full analysis is unchanged.</p></div>
                 <div id="evidenceList" class="evidence-list"></div>
               </div>
             </div>

@@ -12,6 +12,14 @@ number or a behaviour a real file could have hit — the engine version moves to
 `1.4.0` and the payload version to `2.11` because an analysis saved before this
 work and one saved after it can legitimately disagree.
 
+### Security
+
+- Refresh compatible dependency versions to resolve multipart, XML parsing, and test-tool advisories. The dependency audit reports no remaining vulnerabilities.
+
+### Added
+
+- Evidence review in the workspace: search claims, columns and methods; filter by strength; and select findings for a focused, downloadable HTML brief. The brief carries sample size, coverage, methods, caveats, calculation records and the source reading. Analyst notes remain separate from computed evidence and stay in the browser tab until export.
+
 ### Fixed
 
 - **Correlations over large-magnitude columns.** Pearson was computed with the
