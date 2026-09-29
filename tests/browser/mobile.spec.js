@@ -18,6 +18,9 @@ test("the application is usable on a phone viewport", async ({ page }) => {
   await page.goto("/app");
   await expect(page.locator("#dropzone")).toBeVisible();
   await expect(page.locator("#analyzeBtn")).toBeVisible();
+  const dropzone = await page.locator("#dropzone").boundingBox();
+  expect(dropzone.y + dropzone.height, "the upload target should fit in the first viewport")
+    .toBeLessThanOrEqual(page.viewportSize().height);
 
   // Nothing may overflow horizontally — the classic mobile regression.
   const overflow = await page.evaluate(() =>

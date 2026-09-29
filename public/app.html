@@ -76,41 +76,24 @@
     <div id="uploadScreen" class="upload-section animate">
       <div class="upload-intro">
         <p class="upload-eyebrow">Ridge evidence workspace</p>
-        <h1 class="upload-headline">From raw file to<br>decision-ready evidence.</h1>
-        <p class="upload-sub">Profile quality, surface material changes, and trace every finding back to the calculation and source rows behind it.</p>
-
-        <div class="upload-proof" aria-label="Ridge analysis principles">
-          <div><strong>Computed first</strong><span>Statistics come from code, not a model.</span></div>
-          <div><strong>Private by default</strong><span>No account and no stored source file.</span></div>
-          <div><strong>Built to travel</strong><span>Export evidence your team can review.</span></div>
-        </div>
-
-        <div class="sample-strip" id="sampleStrip">
-          <div class="sample-strip-text">
-            <strong>See Ridge with real data</strong>
-            <span>Open a finished sales analysis with evidence, charts, and a quality grade.</span>
-          </div>
-          <button id="sampleBtn" class="sample-btn" type="button">Explore the sample</button>
-        </div>
+        <h1 class="upload-headline">Find the signal in your data.</h1>
+        <p class="upload-sub">Check quality, see what changed, and trace every finding back to its source.</p>
       </div>
 
       <div class="upload-workbench">
         <div class="workbench-head">
           <div>
-            <span class="workbench-kicker">New workspace</span>
-            <h2>Start an analysis</h2>
+            <span class="workbench-kicker">New analysis</span>
+            <h2>Upload your data</h2>
           </div>
-          <span class="workbench-status"><i></i> Private by default</span>
         </div>
 
         <div class="analysis-mode" role="group" aria-label="Analysis mode">
           <button class="analysis-mode-btn active" data-analysis-mode="analyze" type="button" aria-pressed="true">
             <strong>Analyze</strong>
-            <small>Profile one or more files</small>
           </button>
           <button class="analysis-mode-btn" data-analysis-mode="compare" type="button" aria-pressed="false">
             <strong>Compare</strong>
-            <small>Measure baseline-to-current changes</small>
           </button>
         </div>
         <p id="analysisModeHint" class="analysis-mode-hint">Upload one file for a focused analysis, or several to explore them side by side.</p>
@@ -123,10 +106,7 @@
           <div id="fileList" class="file-list" style="display:none;"></div>
         </div>
 
-        <div class="format-line" aria-label="Supported file types">
-          <span>Supports</span>
-          <strong>XLSX</strong><strong>CSV</strong><strong>JSON</strong><strong>PDF</strong><strong>PPTX</strong><strong>DOCX</strong><strong>TXT</strong>
-        </div>
+        <p class="format-line">CSV, Excel, JSON, PDF, PowerPoint, Word, and text files</p>
 
         <div class="upload-status" id="uploadReadiness" role="status" aria-live="polite">
           <span class="upload-status-dot"></span>
@@ -157,6 +137,20 @@
 
         <button id="analyzeBtn" class="analyze-btn" type="button" disabled>Analyze data →</button>
         <div id="errorBox" class="error-box" role="alert" aria-live="assertive" style="display:none;"></div>
+      </div>
+
+      <div class="sample-strip" id="sampleStrip">
+        <div class="sample-strip-text">
+          <strong>See Ridge with real data</strong>
+          <span>Open a finished sales analysis with evidence, charts, and a quality grade.</span>
+        </div>
+        <button id="sampleBtn" class="sample-btn" type="button">Explore the sample</button>
+      </div>
+
+      <div class="upload-proof" aria-label="Ridge analysis principles">
+        <div><strong>Computed first</strong><span>Statistics come from code, not a model.</span></div>
+        <div><strong>Private by default</strong><span>No account and no stored source file.</span></div>
+        <div><strong>Built to travel</strong><span>Export evidence your team can review.</span></div>
       </div>
 
       <div id="historySection" class="history-section" style="display:none;">
@@ -194,11 +188,11 @@
             <div class="dash-meta" id="dashMeta"></div>
           </div>
           <div class="dash-actions">
-            <a class="reset-btn feedback-btn" href="https://github.com/MohammedAlkindi/Ridge/issues/new?template=pilot-feedback.yml" target="_blank" rel="noopener">Give feedback</a>
+            <button class="reset-btn" id="resetBtn">New analysis</button>
             <button class="reset-btn" id="exportJsonBtn">Export JSON</button>
             <button class="reset-btn" id="exportReportBtn">Print report</button>
             <button class="reset-btn" id="shareBtn" style="display:none;">Share</button>
-            <button class="reset-btn" id="resetBtn">New analysis</button>
+            <a class="reset-btn feedback-btn" href="https://github.com/MohammedAlkindi/Ridge/issues/new?template=pilot-feedback.yml" target="_blank" rel="noopener">Give feedback</a>
           </div>
         </div>
 
