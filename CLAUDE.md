@@ -77,7 +77,7 @@ only because its fixture was wrong in a compensating direction. Pick values
 with no relation between them.
 
 ## Known debt
-53 hardcoded color literals sit outside :root in public/styles.css (measured 2026-08-14:
+48 hardcoded color literals sit outside :root in public/styles.css (measured 2026-09-29:
 regex over hex/rgb*/hsl* outside :root blocks; the stale .claude/worktrees copy excluded).
 No lint enforces the CSS-variable rule - treat violations as findings. The global rules carried
 this as an undated 62 from 2026-08-10; the live figure belongs here and moves with the stylesheet.
