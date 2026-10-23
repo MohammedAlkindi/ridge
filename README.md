@@ -206,8 +206,11 @@ public/            static app (/, /app, /privacy, /docs) + sample data
 src/routes/        analyze · ask · explain · history · health
 src/services/      anthropic · remoteFile · history          (all I/O)
 src/analytics/     values · stats · dates · correlations ·
-                   evidence · sample · profile               (pure)
-src/parsers/       spreadsheet · document · structured
+                   inference · evidence · provenance ·
+                   compare · sample · profile                (pure)
+src/parsers/       spreadsheet · structure · encoding ·
+                   document · structured
+src/middleware/    security · rateLimit · requestContext · errorHandler
 api/index.js       Vercel serverless entry
 ```
 

@@ -13,9 +13,9 @@ visually distinct sections so a reader can always tell computed from generated.
 ```
 Browser (public/)                Vercel                     External
 ┌────────────────────┐  /api/*  ┌────────────────────┐   ┌──────────────────┐
-│ /  the application │─────────▶│ api/index.js       │──▶│ Anthropic API    │
-│ /about /privacy    │          │  Express (src/)    │   │ (optional, BYOK) │
-│ /docs              │          │                    │   ├──────────────────┤
+│ /  landing page    │─────────▶│ api/index.js       │──▶│ Anthropic API    │
+│ /app  workspace    │          │  Express (src/)    │   │ (optional, BYOK) │
+│ /privacy  /docs    │          │                    │   ├──────────────────┤
 │ key: sessionStorage│◀─────────│ parse → analyze →  │──▶│ Supabase         │
 │ dashboard render   │   JSON   │ evidence → [model] │   │ (opt-in history) │
 └────────────────────┘          └────────────────────┘   └──────────────────┘
@@ -102,7 +102,7 @@ analyses (
   id          uuid primary key default gen_random_uuid(),
   created_at  timestamptz default now(),
   session_id  text,        -- anonymous browser session
-  kind        text,        -- single | multi | url
+  kind        text,        -- single | multi | url | comparison
   filename    text,
   file_type   text,
   model       text,
@@ -136,8 +136,8 @@ be interpreted against the rules that produced it.
 ## Error model
 
 Every failure is an `AppError { status, code, message }`, or is converted to one
-by `normalizeError`. Clients receive `{ error, code }` and never a stack trace
-or an upstream payload. Provider errors map to typed codes
+by `normalizeError`. Clients receive `{ error, code, requestId }` and never a
+stack trace or an upstream payload. Provider errors map to typed codes
 (`invalid_api_key`, `upstream_rate_limited`, `analysis_truncated`, …).
 
 ## Security posture
