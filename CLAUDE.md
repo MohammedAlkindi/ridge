@@ -1,7 +1,5 @@
 # Ridge — project context for Claude Code
 
-> Project-specific context layered on top of the global standards in `~/.claude/CLAUDE.md`.
-
 ## What it does
 Turns spreadsheets and structured files into traceable findings: statistics,
 data-quality diagnostics, correlations and structured evidence — all computed
