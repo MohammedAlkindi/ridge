@@ -14,7 +14,7 @@ work and one saved after it can legitimately disagree.
 
 ### Security
 
-- Refresh compatible dependency versions to resolve multipart, XML parsing, and test-tool advisories. The dependency audit reports no remaining vulnerabilities.
+- Refresh compatible dependency versions to resolve multipart, XML parsing, and test-tool advisories.
 
 ### Added
 
@@ -198,28 +198,26 @@ work and one saved after it can legitimately disagree.
 ### Verification
 
 - 565 unit and API tests pass (`npm test`), up from 470 before this work.
-- 80 of 80 Playwright journeys pass (`npm run test:browser`), desktop and a
-  Pixel 5 viewport, up from 78. During an earlier run on a machine with ten
-  other agent sessions live, the `/app` first-contentful-paint budget failed
-  once at the end of a full 6-minute pass and then passed in seven consecutive
-  isolated runs; the budget was not touched, and the final full run was green.
-- `npm audit`: 0 vulnerabilities. No dependency was added, removed or upgraded.
+- 85 Playwright journeys (`npm run test:browser`) pass in CI on desktop and a
+  Pixel 5 viewport, up from 78. On a heavily loaded machine the `/app`
+  first-contentful-paint budget failed once and then passed in isolated runs.
+  The budget was not changed.
 - Every fix here was checked in both directions: the regression test was run
   against the previous code and observed to fail for the stated reason before
   being run against the fix.
 
 ### Known limitations
 
-- 53 colour literals still sit outside `:root` in `public/styles.css`, against
+- 48 colour literals still sit outside `:root` in `public/styles.css`, against
   the project's own "CSS variables only" rule. They are shadows and translucent
   surfaces; converting them is a visual change and nothing in the suite renders
   pixels, so the count is now held under a ratchet
   (`tests/style-tokens.test.js`) rather than fixed.
-- Type checking is not enforced. `checkJs` with `strict` reports 612 errors,
-  almost all missing annotations rather than defects; without `strict` it
-  reports 19, and the one real contract error it found — `inferStructure`
-  documenting neither `unapplied` nor `warnings` — is fixed above. A gate would
-  need the annotations first.
+- Type checking is not enforced. `checkJs` with `strict` reports several
+  hundred errors, almost all missing annotations rather than defects. The one
+  real contract error it found, `inferStructure` documenting neither
+  `unapplied` nor `warnings`, is fixed above. A gate would need the
+  annotations first.
 - Preview deployments sit behind Vercel Authentication, so the changes here were
   verified against a local server running the same entry point the serverless
   function loads (`api/index.js`), not against the preview URL over HTTP.
