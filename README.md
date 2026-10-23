@@ -24,6 +24,13 @@ first — statistics, data quality, correlations, evidence — and that is the
 product. A language model is offered afterwards, optionally, and its only job is
 to explain evidence that already exists.
 
+Where each step runs: parsing, statistics, quality checks and evidence are
+Ridge's own Node code. They run on your machine when you run Ridge yourself, and
+on Ridge's server for the live site. No model is involved. The optional
+explanation is the only step that calls a hosted model, Anthropic's Claude API,
+with your key (or a server key, if whoever runs Ridge set one). For a spreadsheet it sends the computed evidence and a small
+sample of rows. For a document it sends the document's text.
+
 ## Layout
 
 | Route | What it is |
