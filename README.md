@@ -103,7 +103,7 @@ sent to Anthropic.
 
 ## Optional AI
 
-Add your own Anthropic key (⚙ in the top bar) to unlock:
+Add your own Anthropic key (**AI settings** in the top bar) to unlock:
 
 - **Explain with Claude** — an interpretation of the evidence already computed.
 - **Follow-up questions** — ask about the dataset in plain language.
@@ -181,7 +181,8 @@ npm ci
 npm run dev            # http://localhost:3000
 ```
 
-Click **Try sample data** — no configuration needed.
+Open `http://localhost:3000/app` and click **Explore the sample**. No
+configuration is needed.
 
 ## Environment variables
 

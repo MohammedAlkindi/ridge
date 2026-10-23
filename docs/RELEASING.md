@@ -68,7 +68,7 @@ tagged commit before creating the Release.
    not evidence that the product works. At minimum:
    - `/` loads the landing page and reaches the workspace in one click
    - `/app` loads the workspace with a working dropzone
-   - **Try sample data** returns evidence, statistics and a quality grade
+   - **Explore the sample** returns evidence, statistics and a quality grade
      with no API key
    - `/?a=x` forwards to `/app?a=x`; `/about` redirects to `/`
    - `/privacy` and `/docs` load
