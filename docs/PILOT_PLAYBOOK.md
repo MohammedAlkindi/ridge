@@ -1,6 +1,6 @@
 # Ridge five-user pilot playbook
 
-This is the operating plan for turning Ridge from a polished product into
+This is the operating plan for turning Ridge from a working product into
 evidence of demand. It is intentionally small: five real users, real recurring
 spreadsheet work, and observable return behaviour. Do not turn interview praise
 into traction; the strongest signal is a second unprompted use.
