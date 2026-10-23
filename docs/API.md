@@ -85,7 +85,7 @@ Response:
                                   // includeRows that matched no exclusion, and a
                                   // headerRow past the end of the file
       "alternatives": [],         // other candidate header rows, when uncertain
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     "schemaVersion": "2.11", "evidenceEngine": "1.4.0"
   },
@@ -116,7 +116,7 @@ Response:
   "evidence": [ { "claim": "...", "metric": "spearman_rho", "value": 0.9068,
                   "columns": ["revenue","spend"], "method": "...", "sampleSize": 90,
                   "coverage": 98.9, "strength": "very strong", "caveat": null,
-                  "statistics": null, "engineVersion": "1.1.0",
+                  "statistics": null, "engineVersion": "1.4.0",
                   "provenance": { "formula": "ρ = ...", "inclusionRule": "...",
                     "inputRows": 91, "includedRows": 90, "excludedRows": 1,
                     "exclusionReasons": [], "sourceRowsPolicy": "...",
@@ -180,7 +180,7 @@ and never invokes an AI provider; an API key is neither required nor used.
 ```jsonc
 {
   "kind": "comparison",
-  "meta": { "comparisonVersion": "1.1.0", "schemaVersion": "2.5", "saved": false },
+  "meta": { "comparisonVersion": "1.1.0", "schemaVersion": "2.11", "saved": false },
   "files": [ /* compact deterministic profile for each file */ ],
   "comparison": {
     "deterministic": true,

@@ -131,7 +131,7 @@ Every material finding is a structured object rather than a sentence:
   "strength": "very strong",
   "caveat": "Pearson and Spearman disagree, suggesting a non-linear or outlier-driven pattern",
   "statistics": null,
-  "engineVersion": "1.3.0",
+  "engineVersion": "1.4.0",
   "provenance": {
     "formula": "ρ = Pearson correlation of the paired value ranks",
     "includedRows": 90,
