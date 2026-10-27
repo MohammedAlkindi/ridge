@@ -320,6 +320,10 @@ async function openSaved(id) {
       .catch(() => ({ error: `Could not load analysis (HTTP ${res.status}).` }));
     if (!res.ok) throw new Error(row.error || "Could not load analysis.");
     currentAnalysisId = row.id;
+    // Stored payloads were captured before the save request completed. The
+    // successful read is now the authoritative evidence that this run is saved.
+    if (row.payload?.meta) row.payload.meta.saved = true;
+    for (const file of row.payload?.files || []) if (file.meta) file.meta.saved = true;
     lastSource = null;
     if (row.kind === "comparison") renderComparisonDashboard(row.payload);
     else if (row.kind === "multi") renderMultiDashboard(row.payload);
