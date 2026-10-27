@@ -8,7 +8,7 @@
 Ridge turns spreadsheets and structured files into traceable findings, quality
 diagnostics, statistical evidence, and clear explanations.
 
-**Live: [ridge-data.vercel.app](https://ridge-data.vercel.app)** — drop a file
+**Live: [tryridge.vercel.app](https://tryridge.vercel.app)** — drop a file
 in and get results. No account, no API key.
 
 ## The problem

@@ -270,6 +270,7 @@ function getSessionId() {
 async function loadHistory() {
   try {
     const res  = await fetch(`/api/history?session=${encodeURIComponent(getSessionId())}`);
+    if (!res.ok) throw new Error("history_unavailable");
     const data = await res.json();
     if (!data.enabled || data.items.length === 0) { historySection.style.display = "none"; return; }
     historySection.style.display = "";
@@ -299,7 +300,11 @@ async function loadHistory() {
           loadHistory();
         } catch (_) { alert("Could not delete this analysis."); }
       }));
-  } catch (_) { historySection.style.display = "none"; }
+  } catch (_) {
+    historySection.style.display = "";
+    historyList.innerHTML = `<p role="status">History is temporarily unavailable. You can still analyze files; your current results are unaffected.</p><button type="button" class="btn-ghost" id="retryHistory">Retry history</button>`;
+    document.getElementById("retryHistory").addEventListener("click", loadHistory);
+  }
 }
 
 async function openSaved(id) {
@@ -944,7 +949,7 @@ function renderMultiDashboard(data) {
   dashMeta.innerHTML = `
     <span class="meta-chip">${successCount} ANALYZED</span>
     ${totalFiles - successCount > 0 ? `<span class="meta-chip" style="color:var(--red);">${totalFiles - successCount} FAILED</span>` : ""}
-    <span class="meta-chip">${modelChip()}</span>
+    <span class="meta-chip">${files.some(file => file.analysis) ? modelChip() : "DETERMINISTIC ONLY"}</span>
   `;
 
   // Cross-file summary
@@ -1050,7 +1055,7 @@ function renderSingleFile(data, isTabbed) {
       ${profile ? `<span class="meta-chip meta-chip--${esc(healthTone)}">HEALTH ${esc(profile.healthGrade)} · ${esc(profile.healthScore)}/100</span>` : ""}
       ${meta.isTabular ? `<span class="meta-chip">${(data.evidence || []).length} EVIDENCE</span>` : ""}
       <span class="meta-chip file-type-chip">${fileTypeLabel}</span>
-      <span class="meta-chip">${(modelLabels[meta.model] || modelChip()).toUpperCase()}</span>
+      <span class="meta-chip">${analysis ? esc((modelLabels[meta.model] || modelChip()).toUpperCase()) : "DETERMINISTIC ONLY"}</span>
     `;
     crossSummarySection.style.display = "none";
     fileTabs.style.display = "none";

@@ -87,6 +87,24 @@ test.describe("landing page at the root", () => {
 });
 
 test.describe("the application at /app", () => {
+  test("history failure is visible and retryable without blocking analysis", async ({ page }) => {
+    let available = false;
+    await page.route("**/api/history?*", (route) => route.fulfill({
+      status: available ? 200 : 502,
+      contentType: "application/json",
+      body: JSON.stringify(available ? { enabled: true, items: [] } : { error: "Could not load history." }),
+    }));
+    await page.goto("/app");
+    await expect(page.locator("#historySection")).toContainText("temporarily unavailable");
+    await expect(page.locator("#dropzone")).toBeVisible();
+    available = true;
+    await page.getByRole("button", { name: "Retry history" }).click();
+    await expect(page.locator("#historySection")).not.toBeVisible();
+    await page.getByRole("button", { name: "Explore the sample" }).click();
+    await expect(page.locator("#dashboardScreen")).toBeVisible();
+    await expect(page.locator("#dashMeta")).toContainText("DETERMINISTIC ONLY");
+    await expect(page.locator("#dashMeta")).not.toContainText("CLAUDE");
+  });
   test("loads without a single console error", async ({ page }) => {
     // A parse error in app.js leaves every control inert but the page looking
     // fine, so failures surface here rather than as a mystery timeout later.
