@@ -21,6 +21,10 @@ npm run test:browser  # Playwright journeys (desktop + mobile)
 npm run test:all      # both
 ```
 
+## Monorepo packages
+- **Ridge Core** (`src/`, `api/`, `public/`): Node.js 22+ / Express 5 web app and deterministic tabular analysis engine.
+- **Receipt** (`packages/receipt/`): Python 3.11+ bank statement ingestion (Chase, BofA, Plaid, Generic CSV), embedding-based merchant clustering, and anomaly detection.
+
 ## Layout
 `src/routes` → `src/services` (anthropic, remoteFile, history) →
 `src/parsers` / `src/analytics` (pure). Errors are `AppError`s normalized by

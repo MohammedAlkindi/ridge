@@ -31,6 +31,11 @@ explanation is the only step that calls a hosted model, Anthropic's Claude API,
 with your key (or a server key, if whoever runs Ridge set one). For a spreadsheet it sends the computed evidence and a small
 sample of rows. For a document it sends the document's text.
 
+## Monorepo packages
+
+- **Ridge Core & Web App** (`src/`, `public/`): Deterministic spreadsheet, tabular data, and document analysis web application.
+- **`packages/receipt`**: Personal finance and bank statement analysis engine (Python). Features Chase/BofA/Plaid transaction ingestion, sentence-transformer categorization, 7 behavioral anomaly detectors, and spending narratives via Claude Sonnet 5.5.
+
 ## Layout
 
 | Route | What it is |

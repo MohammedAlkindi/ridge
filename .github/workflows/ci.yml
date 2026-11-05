@@ -107,7 +107,7 @@ jobs:
       - name: No committed secrets
         run: |
           # Any real Anthropic key shape outside the deliberate test placeholder.
-          if git grep -nE 'sk-ant-[A-Za-z0-9_-]{24,}' -- . ':!tests' ':!*.md'; then
+          if git grep -nE 'sk-ant-[A-Za-z0-9_-]{24,}' -- . ':!tests' ':!packages/receipt/tests' ':!*.md'; then
             echo "::error::possible API key committed"; exit 1
           fi
           if git ls-files | grep -qE '^\.env$|^\.env\.local$'; then
@@ -151,6 +151,28 @@ jobs:
             playwright-report/
             test-results/
           retention-days: 7
+
+  receipt:
+    name: Receipt finance tests (Python 3.12)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/receipt
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: packages/receipt/pyproject.toml
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
+      - name: Lint with ruff
+        run: ruff check receipt/ tests/
+      - name: Run tests
+        run: pytest tests/ -v --tb=short
+        env:
+          RECEIPT_LOG_LEVEL: WARNING
 
   release-version:
     name: Release version validation
