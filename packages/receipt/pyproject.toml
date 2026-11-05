@@ -1,0 +1,92 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "receipt"
+version = "0.1.0"
+description = "Personal finance analysis engine that reads bank transaction CSVs, categorizes them with sentence embeddings, tracks spending drift, and writes plain-English narratives with the Anthropic API."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Mohammed Alkindi", email = "alkndymhmd692@gmail.com" }]
+requires-python = ">=3.11"
+keywords = ["finance", "transactions", "analysis", "anthropic", "ai"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial",
+]
+dependencies = [
+    "anthropic>=0.25.0",
+    "anyio>=4.0.0",
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "scikit-learn>=1.3.0",
+    "sentence-transformers>=2.2.0",
+    "hdbscan>=0.8.33",
+    "alembic>=1.13.0",
+    "sqlalchemy>=2.0.0",
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+    "fastapi>=0.104.0",
+    "uvicorn>=0.24.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.11.0",
+    "httpx>=0.25.0",
+    "ruff>=0.4.0",
+    "mypy>=1.8.0",
+    "build>=1.0.0",
+    "twine>=5.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/MohammedAlkindi/Receipt"
+Repository = "https://github.com/MohammedAlkindi/Receipt"
+
+[project.scripts]
+receipt = "receipt.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["receipt"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["F811"]  # allow fixture redefinition
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+warn_return_any = false
+warn_unused_ignores = true
+
+# numpy >= 2.5 ships stubs written with PEP 695 `type` statements, which mypy
+# refuses to parse while targeting 3.11 — it fails with a syntax error before it
+# checks any of our code. We only consume numpy through pandas and scikit-learn,
+# so skip its stubs rather than raise python_version above what we support.
+[[tool.mypy.overrides]]
+module = ["numpy", "numpy.*"]
+follow_imports = "skip"
+follow_imports_for_stubs = true
